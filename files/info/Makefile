@@ -1,1 +1,1 @@
-/media/psf/Home/Desktop/info
+obj-y := process_sort.o
