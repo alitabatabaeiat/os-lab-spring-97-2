@@ -5,6 +5,7 @@
 #include <linux/init.h>
 #include <linux/sched.h>
 #include <linux/syscalls.h>
+#include <linux/list.h>
 
 struct process_struct {
   struct list_head* list;
