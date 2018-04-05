@@ -6,7 +6,7 @@ struct process_struct* plist_head;
 //
 // }
 
-asmlinkage long sys_init_process_list(pid_t p‬‬) {
+asmlinkage long sys_init_process_list(pid_t p) {
   struct list_head *pos;
   struct pid* pid = find_get_pid(p);
   struct task_struct* task = pid_task(pid, PIDTYPE_PID);

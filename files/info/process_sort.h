@@ -17,6 +17,6 @@ struct file_list {
   struct list_head* list;
 };
 
-‪asmlinkage long sys_init_process_list(pid_t p‬‬);
+asmlinkage long sys_init_process_list(pid_t p);
 
 #endif
