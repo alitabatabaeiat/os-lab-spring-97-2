@@ -1,7 +1,7 @@
 #include "process_sort.h"‪
 struct process_struct* plist_head;
 
-asmlinkage long dfs(struct task_struct* task) {
+void dfs(struct task_struct* task) {
   struct process_struct* new_plist;
   struct task_struct *child_task;
   struct list_head *pos;
