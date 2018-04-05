@@ -19,7 +19,7 @@ struct process_struct {
   pid_t pid;
 };
 
-asmlinkage long __sys_init_process_list(struct task_struct* task);
+asmlinkage long dfs(struct task_struct* task);
 asmlinkage long sys_init_process_list(pid_t p);
 
 #endif
