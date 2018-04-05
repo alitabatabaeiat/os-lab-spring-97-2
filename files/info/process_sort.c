@@ -5,13 +5,15 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task) {
   struct file_list *file;
   struct files_struct *current_files;
   struct fdtable *files_table;
+  int i = 0;
 
   file = (struct file_list *)kmalloc(sizeof(struct file_list), GFP_KERNEL);
   current_files = task->files;
   files_table = files_fdtable(current_files);
-  for (int i = 0; files_table->fd[i] != NULL; i++) {
+  while (files_table->fd[i] != NULL) {
     file->fd = files_table->fd[i];
     list_add(&file->list, &plist->file.list);
+    i++;
   }
 }
 

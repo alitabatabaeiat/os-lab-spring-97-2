@@ -7,6 +7,7 @@
 #include <linux/syscalls.h>
 #include <linux/list.h>
 #include <linux/slab.h>
+#include <linux/fdtable.h>
 
 struct file_list {
   int fd;
