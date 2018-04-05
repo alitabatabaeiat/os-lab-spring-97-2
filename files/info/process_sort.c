@@ -16,7 +16,7 @@ void dfs(struct task_struct* task) {
     printk("plist_head->pid: %d\n", plist_head->pid);
     struct process_struct* x = list_entry(plist_head->list.next, struct process_struct, list);
     printk("x->pid: %d\n", x->pid);
-    // __sys_init_process_list(child_task);
+    dfs(child_task);
     // kfree(new_plist)
   }
   printk("-------------\n");
