@@ -30,7 +30,8 @@ asmlinkage long __sys_init_process_list(struct task_struct* task) {
 asmlinkage long sys_init_process_list(pid_t p) {
   struct list_head *pos;
   struct pid* pid;
-  struct task_struct* task;
+  struct task_struct *task, *child_task;
+  struct process_struct* new_plist;
   pid = find_get_pid(p);
   task = pid_task(pid, PIDTYPE_PID);
   plist_head = (struct process_struct*)kmalloc(sizeof(struct process_struct), GFP_KERNEL);
@@ -49,9 +50,9 @@ asmlinkage long sys_init_process_list(pid_t p) {
 
   list_for_each(pos, &task->children) {
     printk("10\n");
-    struct process_struct* new_plist = (struct process_struct*)kmalloc(sizeof(struct process_struct), GFP_KERNEL);
+    new_plist = (struct process_struct*)kmalloc(sizeof(struct process_struct), GFP_KERNEL);
     printk("11\n");
-    struct task_struct* child_task = list_entry(pos, struct task_struct, sibling);
+    child_task = list_entry(pos, struct task_struct, sibling);
     printk("12\n");
     new_plist->pid = child_task->pid;
     printk("13\n");
