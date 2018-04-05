@@ -10,7 +10,8 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task) {
   file = (struct file_list *)kmalloc(sizeof(struct file_list), GFP_KERNEL);
   current_files = task->files;
   files_table = files_fdtable(current_files);
-  while (files_table->fd[i] != NULL) {
+  printk("files_table->max_fds = %d\n", files_table->max_fds);
+  while (i <= files_table->max_fds) {
     file->fd = i;
     list_add(&file->list, &plist->file.list);
     i++;
