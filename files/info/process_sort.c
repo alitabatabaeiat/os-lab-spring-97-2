@@ -28,11 +28,12 @@ void dfs(struct task_struct* task) {
     child_task = list_entry(pos, struct task_struct, sibling);
     new_plist->pid = child_task->pid;
     printk("child_task->pid: %d\n", child_task->pid);
-    produce_file_list(new_plist, task);
-    list_for_each(m, &new_plist->file.list) {
-      struct file_list *file = list_entry(m, struct file_list, list);
-      printk("fd = %d", file->fd);
-    }
+    // INIT_LIST_HEAD(&new_plist->file.list);
+    // produce_file_list(new_plist, task);
+    // list_for_each(m, &new_plist->file.list) {
+    //   struct file_list *file = list_entry(m, struct file_list, list);
+    //   printk("fd = %d\n", file->fd);
+    // }
     list_add(&new_plist->list, &plist_head->list);
     printk("plist_head->pid: %d\n", plist_head->pid);
     struct process_struct* x = list_entry(plist_head->list.next, struct process_struct, list);
@@ -67,7 +68,7 @@ asmlinkage long sys_init_process_list(pid_t p) {
   produce_file_list(plist_head, task);
   list_for_each(m, &plist_head->file.list) {
     struct file_list *file = list_entry(m, struct file_list, list);
-    printk("fd = %d", file->fd);
+    printk("fd = %d\n", file->fd);
   }
   dfs(task);
   printk("16\n");
