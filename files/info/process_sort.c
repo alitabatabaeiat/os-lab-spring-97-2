@@ -1,8 +1,13 @@
 #include "process_sort.h"‪
 
-struct process_struct* process_list;
+struct process_struct* plist_head;
+
+// asmlinkage long sys_init_process_list(pid_t p‬‬, struct process_struct*) {
+//
+// }
 
 asmlinkage long sys_init_process_list(pid_t p‬‬) {
+  struct list_head *pos;
   struct pid* pid = find_get_pid(p);
   struct task_struct* task = pid_task(pid, PIDTYPE_PID);
 
@@ -10,20 +15,19 @@ asmlinkage long sys_init_process_list(pid_t p‬‬) {
     task = init_task;
     return 1;
   }
-  process_list->pid = task->pid;
-  printk("The pid is %d\n", process_list->pid);
-  process_list->list->next = NULL;
-  process_list->list->prev = NULL;
+  plist_head->pid = task->pid;
+  printk("The pid is %d\n", plist_head->pid);
+  INIT_LIST_HEAD(plist_head->list);
 
-  list_for_each(process_list->list, &(task->children)) {
-    struct process_struct* new_process_list;
-    struct task_struct *child_task = list_entry(process_list->list, struct task_struct, sibling);
-    new_process_list->pid = child_task->pid;
-    new_process_list->list->next = NULL;
-    new_process_list->list->prev = NULL;
-    process_list->list->next = new_process_list;
-    process_list = new_process_list;
-    sys_init_process_list((long)task_pid_nr(child_task));
+  list_for_each(pos, &task->children) {
+    struct process_struct* new_plist;
+    struct task_struct *child_task = list_entry(pos, struct task_struct, sibling);
+    new_plist->pid = child_task->pid;
+
+    list_add(new_plist, plist_head);
+    printk("plist_head->pid: %d\n", plist_head->pid);
+    printk("plist_head->next->pid: %d\n", plist_head->pid);
+    // __sys_init_process_list((long)task_pid_nr(child_task));
   }
 
   return 0;
