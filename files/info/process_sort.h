@@ -6,5 +6,17 @@
 #include <linux/sched.h>
 #include <linux/syscalls.h>
 
-‪asmlinkage long sys_init_process_list(pid_t	p‬‬);
+struct process_struct {
+  struct list_head* list;
+  struct file_list* files;
+  pid_t p‬‬id;
+};
+
+struct file_list {
+  int fd;
+  struct list_head* list;
+};
+
+‪asmlinkage long sys_init_process_list(pid_t p‬‬);
+
 #endif
