@@ -11,7 +11,7 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task) {
   files_table = files_fdtable(current_files);
   for (int i = 0; files_table->fd[i] != NULL; i++) {
     file->fd = files_table->fd[i];
-    list_add(&file->list, &plist->file->list);
+    list_add(&file->list, &plist->file.list);
   }
 }
 
@@ -27,7 +27,7 @@ void dfs(struct task_struct* task) {
     new_plist->pid = child_task->pid;
     printk("child_task->pid: %d\n", child_task->pid);
     produce_file_list(new_plist, task);
-    list_for_each(m, &new_plist->file->list) {
+    list_for_each(m, &new_plist->file.list) {
       struct file_list *file = list_entry(m, struct file_list, list);
       printk("fd = %d", file->fd);
     }
@@ -44,6 +44,7 @@ void dfs(struct task_struct* task) {
 asmlinkage long sys_init_process_list(pid_t p) {
   struct pid* pid;
   struct task_struct *task;
+  struct list_head* m;
   pid = find_get_pid(p);
   task = pid_task(pid, PIDTYPE_PID);
   plist_head = (struct process_struct*)kmalloc(sizeof(struct process_struct), GFP_KERNEL);
@@ -59,10 +60,10 @@ asmlinkage long sys_init_process_list(pid_t p) {
   printk("The pid(task->pid) is %d\n", task->pid);
   printk("The pid is %d\n", plist_head->pid);
   INIT_LIST_HEAD(&plist_head->list);
-  INIT_LIST_HEAD(&plist_head->file->list);
+  INIT_LIST_HEAD(&plist_head->file.list);
 
   produce_file_list(plist_head, task);
-  list_for_each(m, &new_plist->file->list) {
+  list_for_each(m, &plist_head->file.list) {
     struct file_list *file = list_entry(m, struct file_list, list);
     printk("fd = %d", file->fd);
   }

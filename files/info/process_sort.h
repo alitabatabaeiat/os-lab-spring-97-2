@@ -19,7 +19,7 @@ struct process_struct {
   pid_t pid;
 };
 
-void produce_file_list(struct task_struct* task);
+void produce_file_list(struct process_struct* plist, struct task_struct* task);
 void dfs(struct task_struct* task);
 asmlinkage long sys_init_process_list(pid_t p);
 
