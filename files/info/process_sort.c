@@ -11,7 +11,7 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task) {
   current_files = task->files;
   files_table = files_fdtable(current_files);
   while (files_table->fd[i] != NULL) {
-    file->fd = files_table->fd[i];
+    file->fd = i;
     list_add(&file->list, &plist->file.list);
     i++;
   }
