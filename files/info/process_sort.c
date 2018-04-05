@@ -23,10 +23,8 @@ void dfs(struct task_struct* task) {
 }
 
 asmlinkage long sys_init_process_list(pid_t p) {
-  struct list_head *pos;
   struct pid* pid;
-  struct task_struct *task, *child_task;
-  struct process_struct* new_plist;
+  struct task_struct *task;
   pid = find_get_pid(p);
   task = pid_task(pid, PIDTYPE_PID);
   plist_head = (struct process_struct*)kmalloc(sizeof(struct process_struct), GFP_KERNEL);
