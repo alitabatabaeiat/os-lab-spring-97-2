@@ -363,4 +363,5 @@
 544	x32	io_submit		compat_sys_io_submit
 545	common	init_process_list			sys_init_process_list
 546 common sort_process_list			sys_sort_process_list
-547 common sys_print_process			sys_print_process
+547 common print_process_list			sys_print_process_list
+548 common clear_process_list			sys_clear_process_list

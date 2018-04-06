@@ -3,14 +3,17 @@ struct process_struct* plist_head;
 
 int cmp(void *priv, struct list_head *a, struct list_head *b)
 {
-  printk("Entered to predicate...\n");
-  struct process_struct *ela, *elb;
-  printk("before retriving objects");
-  ela = container_of(a, struct process_struct, list);
-  elb = container_of(b, struct process_struct, list);
-
-  printk("ela->pid:%d, elb>pid:%d",ela->pid,elb->pid);
-  return ela->pid - elb->pid;
+  struct process_struct *temp_a, *temp_b;
+  temp_a = kmalloc(sizeof(*temp_a), GFP_KERNEL);
+	temp_b = kmalloc(sizeof(*temp_b), GFP_KERNEL);
+	temp_a = list_entry(a, struct process_struct, list);
+	temp_b = list_entry(b, struct process_struct, list);
+	if (temp_a->pid>temp_b->pid)
+		return 1;
+	else if(temp_a->pid<temp_b->pid)
+		return -1;
+	else
+		return 0;
 }
 
 void produce_file_list(struct process_struct* plist, struct task_struct* task) {
@@ -92,13 +95,23 @@ asmlinkage long sys_sort_process_list(void){
   list_sort(NULL, &plist_head->list, cmp);
   return 0;
 }
-asmlinkage long sys_print_process(void){
+asmlinkage long sys_print_process_list(void){
   struct list_head* p;
-  printk("------------------------ The Holy Results ------------------------------------\n");
+  printk("--------------- The Holy Results ---------------\n");
   list_for_each(p, &plist_head->list) {
     struct process_struct *pr = list_entry(p, struct process_struct, list);
     printk("pid = %d\n", pr->pid);
   }
-  printk("---------------------------End of That ---------------------------------------\n");
+  printk("--------------- End of That ---------------\n");
+  return 0;
+}
+asmlinkage long sys_clear_process_list(void) {
+	struct process_struct *ptr, *next;
+	printk(KERN_INFO "Removing process list...\n");
+	list_for_each_entry_safe(ptr, next, &plist_head->list, list){
+		list_del(&ptr->list);
+		kfree(ptr);
+	}
+  printk("after cleanup.\n");
   return 0;
 }

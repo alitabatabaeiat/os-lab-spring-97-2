@@ -869,5 +869,6 @@ asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
 
 asmlinkage long sys_init_process_list(pid_t p);
 asmlinkage long sys_sort_process_list(void);
-asmlinkage long sys_print_process(void);
+asmlinkage long sys_print_process_list(void);
+asmlinkage long sys_clear_process_list(void);
 #endif

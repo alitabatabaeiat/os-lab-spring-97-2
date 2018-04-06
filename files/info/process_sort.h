@@ -25,5 +25,6 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task);
 void dfs(struct task_struct* task);
 asmlinkage long sys_init_process_list(pid_t p);
 asmlinkage long sys_sort_process_list(void);
-asmlinkage long sys_print_process(void);
+asmlinkage long sys_print_process_list(void);
+asmlinkage long sys_clear_process_list(void);
 #endif
