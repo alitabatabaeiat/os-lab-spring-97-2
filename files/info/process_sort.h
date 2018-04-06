@@ -8,6 +8,7 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 #include <linux/fdtable.h>
+#include <linux/list_sort.h>
 
 struct file_list {
   int fd;
@@ -23,5 +24,6 @@ struct process_struct {
 void produce_file_list(struct process_struct* plist, struct task_struct* task);
 void dfs(struct task_struct* task);
 asmlinkage long sys_init_process_list(pid_t p);
-
+asmlinkage long sys_sort_process_list(void);
+asmlinkage long sys_print_process(void);
 #endif

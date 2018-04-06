@@ -16,6 +16,11 @@ int main() {
     long int amma = syscall(545, getpid());
     printf("2\n");
     printf("System call sys_init returned %ld\n", amma);
+    syscall(547);
+
+    syscall(546);
+    syscall(547);
+
   } else {
     while(1){}
   }

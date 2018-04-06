@@ -868,5 +868,6 @@ asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
 asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
 
 asmlinkage long sys_init_process_list(pid_t p);
-
+asmlinkage long sys_sort_process_list(void);
+asmlinkage long sys_print_process(void);
 #endif
