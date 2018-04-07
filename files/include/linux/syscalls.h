@@ -871,4 +871,5 @@ asmlinkage long sys_init_process_list(pid_t p);
 asmlinkage long sys_sort_process_list(void);
 asmlinkage long sys_print_process_list(void);
 asmlinkage long sys_clear_process_list(void);
+asmlinkage long sys_sort_file_descriptor_list(void);
 #endif

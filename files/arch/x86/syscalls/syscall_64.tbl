@@ -365,3 +365,4 @@
 546 common sort_process_list			sys_sort_process_list
 547 common print_process_list			sys_print_process_list
 548 common clear_process_list			sys_clear_process_list
+549 common sort_file_descriptor			sys_sort_file_descriptor_list

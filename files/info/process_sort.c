@@ -1,7 +1,7 @@
 #include "process_sort.h"‪
 struct process_struct* plist_head;
 
-int cmp(void *priv, struct list_head *a, struct list_head *b)
+int inc_pid_pred(void *priv, struct list_head *a, struct list_head *b)
 {
   struct process_struct *temp_a, *temp_b;
   temp_a = kmalloc(sizeof(*temp_a), GFP_KERNEL);
@@ -14,6 +14,20 @@ int cmp(void *priv, struct list_head *a, struct list_head *b)
 		return -1;
 	else
 		return 0;
+}
+int dec_mxfd_pred(void *priv, struct list_head *a, struct list_head *b)
+{
+  struct process_struct *temp_a, *temp_b;
+  temp_a = kmalloc(sizeof(*temp_a), GFP_KERNEL);
+  temp_b = kmalloc(sizeof(*temp_b), GFP_KERNEL);
+  temp_a = list_entry(a, struct process_struct, list);
+  temp_b = list_entry(b, struct process_struct, list);
+  if (temp_a->max_fd>temp_b->max_fd)
+    return -1;
+  else if(temp_a->max_fd<temp_b->max_fd)
+    return 1;
+  else
+    return 0;
 }
 
 void produce_file_list(struct process_struct* plist, struct task_struct* task) {
@@ -31,7 +45,7 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task) {
       file->fd = i;
       plist->max_fd = i;
       list_add(&file->list, &plist->file.list);
-      printk("i = %d", i);
+      printk("i = %d,", i);
       count_files++;
     }
     i++;
@@ -53,16 +67,11 @@ void dfs(struct task_struct* task) {
     printk("child_task->pid: %d\n", child_task->pid);
     INIT_LIST_HEAD(&new_plist->file.list);
     produce_file_list(new_plist, task);
-    // list_for_each(m, &new_plist->file.list) {
-    //   struct file_list *file = list_entry(m, struct file_list, list);
-    //   printk("fd = %d\n", file->fd);
-    // }
     list_add(&new_plist->list, &plist_head->list);
     printk("plist_head->pid: %d\n", plist_head->pid);
     struct process_struct* x = list_entry(plist_head->list.next, struct process_struct, list);
     printk("x->pid: %d\n", x->pid);
     dfs(child_task);
-    // kfree(new_plist)
   }
   printk("-------------\n");
 }
@@ -89,17 +98,13 @@ asmlinkage long sys_init_process_list(pid_t p) {
   INIT_LIST_HEAD(&plist_head->file.list);
 
   produce_file_list(plist_head, task);
-  /*list_for_each(m, &plist_head->file.list) {
-    struct file_list *file = list_entry(m, struct file_list, list);
-    printk("fd = %d\n", file->fd);
-  }*/
   dfs(task);
   printk("16\n");
 
   return 0;
 }
 asmlinkage long sys_sort_process_list(void){
-  list_sort(NULL, &plist_head->list, cmp);
+  list_sort(NULL, &plist_head->list, inc_pid_pred);
   return 0;
 }
 asmlinkage long sys_print_process_list(void){
@@ -107,7 +112,7 @@ asmlinkage long sys_print_process_list(void){
   printk("--------------- The Holy Results ---------------\n");
   list_for_each(p, &plist_head->list) {
     struct process_struct *pr = list_entry(p, struct process_struct, list);
-    printk("pid = %d\n", pr->pid);
+    printk("(%d,%d)\n", pr->pid,pr->len_of_file_list);
   }
   printk("--------------- End of That ---------------\n");
   return 0;
@@ -120,5 +125,9 @@ asmlinkage long sys_clear_process_list(void) {
 		kfree(ptr);
 	}
   printk("after cleanup.\n");
+  return 0;
+}
+asmlinkage long sys_sort_file_descriptor_list(void){
+  list_sort(NULL, &plist_head->list, dec_mxfd_pred);
   return 0;
 }

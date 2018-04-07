@@ -35,6 +35,10 @@ int main() {
 
     syscall(547);
 
+    syscall(549);
+
+    syscall(547);
+    
 
   } else {
     while(1){}
