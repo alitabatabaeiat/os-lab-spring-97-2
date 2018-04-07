@@ -18,8 +18,9 @@ struct file_list {
 struct process_struct {
   struct list_head list;
   struct file_list file;
-  int num_of_fds;
   pid_t pid;
+  int len_of_file_list;
+  int max_fd;
 };
 
 void produce_file_list(struct process_struct* plist, struct task_struct* task);
