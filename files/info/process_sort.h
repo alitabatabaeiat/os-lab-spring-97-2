@@ -18,6 +18,7 @@ struct file_list {
 struct process_struct {
   struct list_head list;
   struct file_list file;
+  int num_of_fds;
   pid_t pid;
 };
 

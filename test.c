@@ -13,7 +13,7 @@ int main() {
   if (pid1 > 0 && pid2 > 0 && pid3 > 0) {
     printf("---\npid1 = %d\npid2= %d\n", pid1, pid2);
     while(count < 1000000000) count++;
-    long int amma = syscall(545, getpid());
+    long int amma = syscall(545, /*getpid()*/5099);
     printf("2\n");
     printf("System call sys_init returned %ld\n", amma);
    

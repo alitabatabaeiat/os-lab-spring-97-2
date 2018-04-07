@@ -22,15 +22,19 @@ void produce_file_list(struct process_struct* plist, struct task_struct* task) {
   struct fdtable *files_table;
   int i = 0;
 
-  file = (struct file_list *)kmalloc(sizeof(struct file_list), GFP_KERNEL);
   current_files = task->files;
   files_table = files_fdtable(current_files);
-  printk("files_table->max_fds = %d\n", files_table->max_fds);
-  while (i <= files_table->max_fds) {
-    file->fd = i;
-    list_add(&file->list, &plist->file.list);
+  plist->num_of_fds=0;
+  while(i<=files_table->max_fds) {
+    if(files_table->fd[i] != NULL){
+      plist->num_of_fds++;
+      file = (struct file_list *)kmalloc(sizeof(struct file_list), GFP_KERNEL);
+      file->fd = i;
+      list_add(&file->list, &plist->file.list);
+    }
     i++;
   }
+  printk("max_fd is:%d, num of fds are:\n",file->fd,plist->num_of_fd);
 }
 
 void dfs(struct task_struct* task) {
@@ -44,8 +48,8 @@ void dfs(struct task_struct* task) {
     child_task = list_entry(pos, struct task_struct, sibling);
     new_plist->pid = child_task->pid;
     printk("child_task->pid: %d\n", child_task->pid);
-    // INIT_LIST_HEAD(&new_plist->file.list);
-    // produce_file_list(new_plist, task);
+     INIT_LIST_HEAD(&new_plist->file.list);
+     produce_file_list(new_plist, task);
     // list_for_each(m, &new_plist->file.list) {
     //   struct file_list *file = list_entry(m, struct file_list, list);
     //   printk("fd = %d\n", file->fd);
@@ -96,11 +100,20 @@ asmlinkage long sys_sort_process_list(void){
   return 0;
 }
 asmlinkage long sys_print_process_list(void){
-  struct list_head* p;
+  struct list_head* p,*q;
   printk("--------------- The Holy Results ---------------\n");
   list_for_each(p, &plist_head->list) {
     struct process_struct *pr = list_entry(p, struct process_struct, list);
-    printk("pid = %d\n", pr->pid);
+    printk("(%d,%d):\n", pr->pid,pr->num_of_fds);
+    
+    //DEBUG
+    list_for_each(q, &pr->file.list) {
+      struct process_struct *qr = list_entry(q, struct file_list, list);
+      printk("%d,",qr->fd);
+    }
+    printk("\n");
+    //DEBUG
+    
   }
   printk("--------------- End of That ---------------\n");
   return 0;
