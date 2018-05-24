@@ -124,6 +124,7 @@ asmlinkage long sys_print_process_list(void) {
         init = 1;
     }
     struct list_head *p;
+    printk("(%d, %d)\n", plist_head->pid, plist_head->len_of_file_list);
     printk("--------------- The Holy Results ---------------\n");
     list_for_each(p, &plist_head->list)
     {
@@ -149,7 +150,7 @@ asmlinkage long sys_clear_process_list(void) {
     return 0;
 }
 
-asmlinkage long sys_sort_file_descriptor_list(void) {    int init = 0;
+asmlinkage long sys_sort_file_descriptor_list(void) {
     if (plist_head == NULL)
         printk("plist is null");
 
